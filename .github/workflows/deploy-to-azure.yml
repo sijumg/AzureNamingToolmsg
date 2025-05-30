@@ -9,6 +9,14 @@ on:
 env:
   DOTNET_VERSION: '8.0.x'
 
+defaults:
+  run:
+    working-directory: src
+
+permissions:
+  contents: read
+                
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -29,11 +37,11 @@ jobs:
         run: dotnet build --configuration Release --no-restore
 
       - name: Publish
-        run: dotnet publish -c Release -o ./publish
+        run: dotnet publish -c Release -o ./myapp
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ./publish
+          package: ./myapp
